@@ -71,7 +71,7 @@ services:
 
   redis:
     profiles: [backend, full]
-    image: docker.io/redis:7.2
+    image: docker.io/redis:8.6
     container_name: local_redis
     volumes:
       - local_redis_data:/data
