@@ -1,0 +1,92 @@
+[
+  {
+    "model": "users.user",
+    "pk": "e531d437-3b55-483d-92bd-88cf6fb29969",
+    "fields": {
+      "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$Z0FpRW02TmxIOEhoMk1ja0xTTE81SA$8JEJ6f9Ae5xV6x1IuLENmepKD6cR5pyLrKvqfB8aZog",
+      "last_login": "2026-04-11T02:03:47.186Z",
+      "is_superuser": true,
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2026-04-11T02:03:41.568Z",
+      "created_at": "2026-04-11T02:03:41.568Z",
+      "updated_at": "2026-04-11T02:03:47.186Z",
+      "name": "Admin",
+      "email": "admin@example.com",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": "bfdc4156-5846-48a4-a936-748c94d17a4c",
+    "fields": {
+      "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$MW9McHpmSGF4dmJjM05hdUt3SG03WQ$nh5FKXx9hNZ7PIXG5VtfTZWC4qE+udhPLxYUnpZEuAY",
+      "last_login": null,
+      "is_superuser": false,
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2026-04-11T02:10:43.385Z",
+      "created_at": "2026-04-11T02:10:43.385Z",
+      "updated_at": "2026-04-11T02:10:43.385Z",
+      "name": "Santiago Rivera",
+      "email": "santiago.rivera@example.com",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": "138f7751-6b79-42a4-b8a2-c5cf7b92251a",
+    "fields": {
+      "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$ZjY2a1VlQWZVYUEzZUpiUzhJbHM2RQ$TlDa36T6HUtQ5kB3uwoBOIYdbXjqLn6dJAjCWUrO1wA",
+      "last_login": null,
+      "is_superuser": false,
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2026-04-11T02:11:02.673Z",
+      "created_at": "2026-04-11T02:11:02.673Z",
+      "updated_at": "2026-04-11T02:11:02.673Z",
+      "name": "Carolina Mendez",
+      "email": "carolina.mendez@example.com",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": "a1111111-1111-4111-8111-111111111111",
+    "fields": {
+      "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$Z0FpRW02TmxIOEhoMk1ja0xTTE81SA$8JEJ6f9Ae5xV6x1IuLENmepKD6cR5pyLrKvqfB8aZog",
+      "last_login": null,
+      "is_superuser": false,
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2026-04-11T03:00:00.000Z",
+      "created_at": "2026-04-11T03:00:00.000Z",
+      "updated_at": "2026-04-11T03:00:00.000Z",
+      "name": "Laura Garcia",
+      "email": "laura.garcia@example.com",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": "b2222222-2222-4222-8222-222222222222",
+    "fields": {
+      "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$Z0FpRW02TmxIOEhoMk1ja0xTTE81SA$8JEJ6f9Ae5xV6x1IuLENmepKD6cR5pyLrKvqfB8aZog",
+      "last_login": null,
+      "is_superuser": false,
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2026-04-11T03:00:00.000Z",
+      "created_at": "2026-04-11T03:00:00.000Z",
+      "updated_at": "2026-04-11T03:00:00.000Z",
+      "name": "Diego Torres",
+      "email": "diego.torres@example.com",
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]

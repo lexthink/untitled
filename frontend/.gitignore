@@ -1,0 +1,13 @@
+# Astro
+dist/
+.astro/
+
+# Dependencies
+node_modules/
+
+# Logs
+pnpm-debug.log*
+
+# Environment
+.env
+.env.production

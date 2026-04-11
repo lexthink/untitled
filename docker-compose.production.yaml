@@ -1,0 +1,74 @@
+volumes:
+  production_postgres_data: {}
+  production_redis_data: {}
+  production_traefik: {}
+
+services:
+  traefik:
+    profiles: [backend, full]
+    build:
+      context: ./compose/production/traefik
+      dockerfile: Dockerfile
+    image: apps_production_traefik
+    depends_on:
+      - backend
+    volumes:
+      - production_traefik:/etc/traefik/acme
+    ports:
+      - '0.0.0.0:80:80'
+      - '0.0.0.0:443:443'
+      - '0.0.0.0:5555:5555'
+
+  frontend:
+    profiles: [frontend, full]
+    build:
+      context: ./frontend
+      dockerfile: ../compose/production/frontend/Dockerfile
+    image: production_frontend
+    ports:
+      - "4321:4321"
+
+  backend: &backend
+    profiles: [backend, full]
+    build:
+      context: ./backend
+      dockerfile: ../compose/production/backend/Dockerfile
+      additional_contexts:
+        compose: ./compose
+    image: production_backend
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.envs/.production/.backend
+      - ./.envs/.production/.postgres
+    command: /start
+
+  celeryworker:
+    <<: *backend
+    image: apps_production_celeryworker
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *backend
+    image: apps_production_celerybeat
+    command: /start-celerybeat
+
+  flower:
+    <<: *backend
+    image: apps_production_flower
+    command: /start-flower
+
+  redis:
+    profiles: [backend, full]
+    image: docker.io/redis:7.2
+    volumes:
+      - production_redis_data:/data
+
+  postgres:
+    profiles: [backend, full]
+    image: docker.io/postgres:18
+    volumes:
+      - production_postgres_data:/var/lib/postgresql/18/docker
+    env_file:
+      - ./.envs/.production/.postgres
