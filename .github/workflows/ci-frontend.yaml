@@ -1,0 +1,41 @@
+name: Frontend CI
+
+on:
+  pull_request:
+    branches: ['main']
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/ci-frontend.yaml'
+
+  push:
+    branches: ['main']
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/ci-frontend.yaml'
+
+concurrency:
+  group: frontend-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'frontend/package.json'
+
+      - name: Install pnpm
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: frontend
+
+      - name: Build
+        run: pnpm build
+        working-directory: frontend

@@ -1,0 +1,59 @@
+version: 2
+updates:
+  # Update GitHub actions in workflows
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'daily'
+    groups:
+      github-actions:
+        patterns:
+          - '*'
+
+  # Update Dockerfiles
+  - package-ecosystem: 'docker'
+    directories:
+      - 'compose/local/backend/'
+      - 'compose/local/frontend/'
+      - 'compose/production/backend/'
+      - 'compose/production/frontend/'
+      - 'compose/production/traefik/'
+    schedule:
+      interval: 'daily'
+    ignore:
+      - dependency-name: '*'
+        update-types:
+          - 'version-update:semver-major'
+    groups:
+      docker:
+        patterns:
+          - '*'
+
+  # Update Docker Compose files
+  - package-ecosystem: 'docker-compose'
+    directories:
+      - '/'
+    schedule:
+      interval: 'daily'
+
+  # Update Python/uv dependencies
+  - package-ecosystem: 'uv'
+    directory: '/backend'
+    schedule:
+      interval: 'daily'
+    groups:
+      python:
+        update-types:
+          - 'minor'
+          - 'patch'
+
+  # Update npm/pnpm dependencies
+  - package-ecosystem: 'npm'
+    directory: '/frontend'
+    schedule:
+      interval: 'daily'
+    groups:
+      npm:
+        update-types:
+          - 'minor'
+          - 'patch'
