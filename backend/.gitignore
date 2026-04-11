@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environments
+.venv/
+
+# Distribution
+*.egg-info/
+dist/
+build/
+
+# Django
+staticfiles/
+media/
+
+# Celery
+celerybeat-schedule
+
+# Tests / Coverage
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Mypy
+.mypy_cache/
+
+# IPython
+.ipython/
+
+# Environment
+.env

@@ -1,0 +1,23 @@
+log:
+  level: INFO
+
+api:
+  dashboard: true
+
+entryPoints:
+  web:
+    address: ':80'
+  web-secure:
+    address: ':443'
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: 'dev@monoku.com'
+      storage: /etc/traefik/acme/acme.json
+      httpChallenge:
+        entryPoint: web
+
+providers:
+  docker:
+    exposedByDefault: false

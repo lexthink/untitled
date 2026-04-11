@@ -1,0 +1,98 @@
+volumes:
+  production_postgres_data: {}
+  production_redis_data: {}
+  production_traefik: {}
+
+services:
+  traefik:
+    build:
+      context: ./compose/production/traefik
+      dockerfile: Dockerfile
+    image: production_traefik
+    depends_on:
+      - frontend
+      - backend
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - production_traefik:/etc/traefik/acme
+    ports:
+      - '0.0.0.0:80:80'
+      - '0.0.0.0:443:443'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.${DOMAIN}`)"
+      - "traefik.http.routers.dashboard.entrypoints=web-secure"
+      - "traefik.http.routers.dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.dashboard.service=api@internal"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../compose/production/frontend/Dockerfile
+    image: production_frontend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend-secure.rule=Host(`app.${DOMAIN}`)"
+      - "traefik.http.routers.frontend-secure.entrypoints=web-secure"
+      - "traefik.http.routers.frontend-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.services.frontend.loadbalancer.server.port=4321"
+
+  backend: &backend
+    build:
+      context: ./backend
+      dockerfile: ../compose/production/backend/Dockerfile
+      additional_contexts:
+        compose: ./compose
+    image: production_backend
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.envs/.production/.backend
+      - ./.envs/.production/.postgres
+    command: /start
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend-secure.rule=Host(`backend.${DOMAIN}`)"
+      - "traefik.http.routers.backend-secure.entrypoints=web-secure"
+      - "traefik.http.routers.backend-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.backend-http.rule=Host(`backend.${DOMAIN}`)"
+      - "traefik.http.routers.backend-http.entrypoints=web"
+      - "traefik.http.routers.backend-http.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.services.backend.loadbalancer.server.port=5000"
+
+  celeryworker:
+    <<: *backend
+    image: production_celeryworker
+    command: /start-celeryworker
+    labels: []
+
+  celerybeat:
+    <<: *backend
+    image: production_celerybeat
+    command: /start-celerybeat
+    labels: []
+
+  flower:
+    <<: *backend
+    image: production_flower
+    command: /start-flower
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.flower-secure.rule=Host(`flower.${DOMAIN}`)"
+      - "traefik.http.routers.flower-secure.entrypoints=web-secure"
+      - "traefik.http.routers.flower-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.services.flower.loadbalancer.server.port=5555"
+
+  redis:
+    image: docker.io/redis:7.2
+    volumes:
+      - production_redis_data:/data
+
+  postgres:
+    image: docker.io/postgres:18
+    volumes:
+      - production_postgres_data:/var/lib/postgresql/18/docker
+    env_file:
+      - ./.envs/.production/.postgres

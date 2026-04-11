@@ -1,0 +1,93 @@
+volumes:
+  local_postgres_data: {}
+  local_redis_data: {}
+
+services:
+  frontend:
+    profiles: [frontend, full]
+    build:
+      context: ./frontend
+      dockerfile: ../compose/local/frontend/Dockerfile
+    image: local_frontend
+    container_name: local_frontend
+    volumes:
+      - /app/node_modules
+      - ./frontend:/app:z
+    ports:
+      - "4321:4321"
+
+  backend: &backend
+    profiles: [backend, full]
+    build:
+      context: ./backend
+      dockerfile: ../compose/local/backend/Dockerfile
+      additional_contexts:
+        compose: ./compose
+    image: local_backend
+    container_name: local_backend
+    depends_on:
+      - postgres
+      - redis
+      - mailpit
+    volumes:
+      - /app/.venv
+      - ./backend:/app:z
+    env_file:
+      - ./.envs/.local/.backend
+      - ./.envs/.local/.postgres
+    ports:
+      - "8000:8000"
+    command: /start
+
+  celeryworker:
+    <<: *backend
+    image: local_celeryworker
+    container_name: local_celeryworker
+    depends_on:
+      - redis
+      - postgres
+      - mailpit
+    ports: []
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *backend
+    image: local_celerybeat
+    container_name: local_celerybeat
+    depends_on:
+      - redis
+      - postgres
+      - mailpit
+    ports: []
+    command: /start-celerybeat
+
+  flower:
+    <<: *backend
+    image: local_flower
+    container_name: local_flower
+    ports:
+      - "5555:5555"
+    command: /start-flower
+
+  redis:
+    profiles: [backend, full]
+    image: docker.io/redis:7.2
+    container_name: local_redis
+    volumes:
+      - local_redis_data:/data
+
+  postgres:
+    profiles: [backend, full]
+    image: docker.io/postgres:18
+    container_name: local_postgres
+    volumes:
+      - local_postgres_data:/var/lib/postgresql/18/docker
+    env_file:
+      - ./.envs/.local/.postgres
+
+  mailpit:
+    profiles: [backend, full]
+    image: docker.io/axllent/mailpit:latest
+    container_name: local_mailpit
+    ports:
+      - "8025:8025"
